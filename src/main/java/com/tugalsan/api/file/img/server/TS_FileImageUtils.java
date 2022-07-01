@@ -13,6 +13,7 @@ import net.coobird.thumbnailator.*;
 import com.tugalsan.api.shape.client.*;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.*;
+import com.tugalsan.api.unsafe.client.*;
 import com.tugalsan.api.url.client.*;
 
 public class TS_FileImageUtils {
@@ -34,12 +35,10 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage readImageFromFile(Path sourceImage, boolean cast2RGB) {
-        try {
+        return TGS_UnSafe.compile(() -> {
             var bufferedImage = ImageIO.read(sourceImage.toFile());
             return cast2RGB ? toImageRGB(bufferedImage) : bufferedImage;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static void resize(BufferedImage src, BufferedImage desWithSize, boolean clever) {
@@ -119,20 +118,18 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage toImage(Path source) {
-        try {
+        return TGS_UnSafe.compile(() -> {
             var imgbytes = Files.readAllBytes(source);
             return toImage(imgbytes);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static BufferedImage toImage(byte[] imgbytes) {
-        try ( var bis = new ByteArrayInputStream(imgbytes)) {
-            return ImageIO.read(bis);
-        } catch (Exception e) {
-            return null;
-        }
+        return TGS_UnSafe.compile(() -> {
+            try ( var bis = new ByteArrayInputStream(imgbytes)) {
+                return ImageIO.read(bis);
+            }
+        });
     }
 
     public static BufferedImage toImageRGB(BufferedImage preImage) {
@@ -141,9 +138,12 @@ public class TS_FileImageUtils {
         return convertToRGB;
     }
 
-    public static BufferedImage resize_and_rotate(BufferedImage preImage, TGS_ShapeDimension<Integer> newDim, Integer rotate, boolean respect) {
-        try {
+    public static BufferedImage resize_and_rotate(BufferedImage preImage, TGS_ShapeDimension<Integer> newDim0, Integer rotate0, boolean respect) {
+        return TGS_UnSafe.compile(() -> {
             d.ci("resize_and_rotate.init: ", preImage.getClass().getSimpleName());
+
+            var rotate = rotate0;
+            var newDim = newDim0;
 
             if (rotate == null) {
                 rotate = 0;
@@ -189,13 +189,11 @@ public class TS_FileImageUtils {
             }
             d.ci("resize_and_rotate.fin");
             return b.asBufferedImage();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static BufferedImage autoSizeRespectfully(BufferedImage bi, TGS_ShapeDimension<Integer> max, float quality_fr0_to1) {
-        try {
+        return TGS_UnSafe.compile(() -> {
             var b = Thumbnails.of(bi);
             d.ci("castFromIMGtoPDF_A4PORT", "init", bi.getWidth(), bi.getHeight());
             if ((max.width < max.height && bi.getWidth() > bi.getHeight()) || (max.width > max.height && bi.getWidth() < bi.getHeight())) {
@@ -213,19 +211,17 @@ public class TS_FileImageUtils {
             d.ci("castFromIMGtoPDF_A4PORT", "scaleFactor", scaleFactor);
             b = b.scale(scaleFactor).outputQuality(quality_fr0_to1);
             return b.asBufferedImage();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static byte[] toBytes(BufferedImage image, CharSequence fileType) {
-        try ( var baos = new ByteArrayOutputStream()) {
-            ImageIO.write(image, fileType.toString(), baos);
-            baos.flush();
-            return baos.toByteArray();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return TGS_UnSafe.compile(() -> {
+            try ( var baos = new ByteArrayOutputStream()) {
+                ImageIO.write(image, fileType.toString(), baos);
+                baos.flush();
+                return baos.toByteArray();
+            }
+        });
     }
 
     public static String toBase64(BufferedImage image, CharSequence fileType) {
@@ -233,37 +229,24 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage ToImage(CharSequence base64) {
-        try {
-            return toImage(Base64.getDecoder().decode(base64.toString()));
-        } catch (Exception e) {
-            return null;
-        }
+        return TGS_UnSafe.compile(() -> toImage(Base64.getDecoder().decode(base64.toString())));
     }
 
     public static BufferedImage ToImage(TGS_Url url) {
-        try {
-            return ImageIO.read(new URL(url.toString()));
-        } catch (Exception e) {
-            return null;
-        }
+        return TGS_UnSafe.compile(() -> ImageIO.read(new URL(url.toString())));
     }
 
     public static void toFile(BufferedImage image, Path imgFile, double quality_fr0_to1) {
-//        try {//DEPRECATED: NOT GOOD QUALITY
+//        //DEPRECATED: NOT GOOD QUALITY
 //            image = TS_ImageUtils.toImageRGB(image);
 //            ImageIO.write(image, TS_FileUtils.getNameType(imgFile), imgFile.toFile());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-        try {
+        TGS_UnSafe.execute(() -> {
             if (quality_fr0_to1 > 0.99) {
                 Thumbnails.of(image).scale(1).toFile(imgFile.toFile());
             } else {
                 Thumbnails.of(image).scale(1).outputQuality(quality_fr0_to1).toFile(imgFile.toFile());
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static BufferedImage createRGB(int width, int height) {
@@ -279,7 +262,7 @@ public class TS_FileImageUtils {
     }
 
     public static int[][] createNoiseData(int width, int height) {
-        int[][] data = new int[height][width];
+        var data = new int[height][width];
         IntStream.range(0, height).parallel().forEach(ci -> {
             data[ci] = TS_RandomUtils.nextIntArray(width, 0, 255);
         });
