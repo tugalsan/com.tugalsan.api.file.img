@@ -18,7 +18,7 @@ import com.tugalsan.api.url.client.*;
 
 public class TS_FileImageUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class.getSimpleName());
+    final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class);
 
     public static BufferedImage toImage(CharSequence sourceText, int width, int height, int x, int y, Color colorFore, Color colorBack, Font font) {
         var bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

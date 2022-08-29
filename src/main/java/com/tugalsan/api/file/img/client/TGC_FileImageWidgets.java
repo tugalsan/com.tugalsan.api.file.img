@@ -7,7 +7,7 @@ import com.tugalsan.api.string.client.*;
 
 public class TGC_FileImageWidgets {
 
-    final private static TGC_Log d = TGC_Log.of(TGC_FileImageWidgets.class.getSimpleName());
+    final private static TGC_Log d = TGC_Log.of(TGC_FileImageWidgets.class);
 
     public TGC_FileImageWidgets(CharSequence mediaBase) {
         wi = new Image[5];
