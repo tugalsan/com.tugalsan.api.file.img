@@ -1,6 +1,6 @@
 module com.tugalsan.api.file.img {
     requires java.desktop;
-    requires thumbnailator;
+    requires net.coobird.thumbnailator;
     requires com.tugalsan.api.executable;
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.thread;
