@@ -38,7 +38,7 @@ public class TGC_FileImageController {
         base.wi_animate();
         if (!animateNextScheduled) {
             animateNextScheduled = true;
-            ms_timer.execute_afterSeconds(1);
+            ms_timer.run_afterSeconds(1);
         }
     }
     boolean animateNextScheduled = false;

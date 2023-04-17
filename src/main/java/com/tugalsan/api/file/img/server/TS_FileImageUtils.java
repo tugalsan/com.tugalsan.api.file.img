@@ -35,7 +35,7 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage readImageFromFile(Path sourceImage, boolean cast2RGB) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var bufferedImage = ImageIO.read(sourceImage.toFile());
             return cast2RGB ? toImageRGB(bufferedImage) : bufferedImage;
         });
@@ -118,14 +118,14 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage toImage(Path source) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var imgbytes = Files.readAllBytes(source);
             return toImage(imgbytes);
         });
     }
 
     public static BufferedImage toImage(byte[] imgbytes) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             try ( var bis = new ByteArrayInputStream(imgbytes)) {
                 return ImageIO.read(bis);
             }
@@ -139,7 +139,7 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage resize_and_rotate(BufferedImage preImage, TGS_ShapeDimension<Integer> newDim0, Integer rotate0, boolean respect) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             d.ci("resize_and_rotate.init: ", preImage.getClass().getSimpleName());
 
             var rotate = rotate0;
@@ -193,7 +193,7 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage autoSizeRespectfully(BufferedImage bi, TGS_ShapeDimension<Integer> max, float quality_fr0_to1) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             var b = Thumbnails.of(bi);
             d.ci("castFromIMGtoPDF_A4PORT", "init", bi.getWidth(), bi.getHeight());
             if ((max.width < max.height && bi.getWidth() > bi.getHeight()) || (max.width > max.height && bi.getWidth() < bi.getHeight())) {
@@ -215,7 +215,7 @@ public class TS_FileImageUtils {
     }
 
     public static byte[] toBytes(BufferedImage image, CharSequence fileType) {
-        return TGS_UnSafe.compile(() -> {
+        return TGS_UnSafe.call(() -> {
             try ( var baos = new ByteArrayOutputStream()) {
                 ImageIO.write(image, fileType.toString(), baos);
                 baos.flush();
@@ -229,18 +229,18 @@ public class TS_FileImageUtils {
     }
 
     public static BufferedImage ToImage(CharSequence base64) {
-        return TGS_UnSafe.compile(() -> toImage(Base64.getDecoder().decode(base64.toString())));
+        return TGS_UnSafe.call(() -> toImage(Base64.getDecoder().decode(base64.toString())));
     }
 
     public static BufferedImage ToImage(TGS_Url url) {
-        return TGS_UnSafe.compile(() -> ImageIO.read(new URL(url.toString())));
+        return TGS_UnSafe.call(() -> ImageIO.read(new URL(url.toString())));
     }
 
     public static void toFile(BufferedImage image, Path imgFile, double quality_fr0_to1) {
 //        //DEPRECATED: NOT GOOD QUALITY
 //            image = TS_ImageUtils.toImageRGB(image);
 //            ImageIO.write(image, TS_FileUtils.getNameType(imgFile), imgFile.toFile());
-        TGS_UnSafe.execute(() -> {
+        TGS_UnSafe.run(() -> {
             if (quality_fr0_to1 > 0.99) {
                 Thumbnails.of(image).scale(1).toFile(imgFile.toFile());
             } else {
