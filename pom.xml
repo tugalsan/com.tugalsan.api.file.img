@@ -40,6 +40,11 @@
             <artifactId>com.tugalsan.api.gui</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>com.tugalsan.api.crypto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     
     <build>

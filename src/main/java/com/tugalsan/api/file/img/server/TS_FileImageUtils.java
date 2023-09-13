@@ -1,5 +1,6 @@
 package com.tugalsan.api.file.img.server;
 
+import com.tugalsan.api.crypto.client.TGS_CryptUtils;
 import java.net.*;
 import java.util.*;
 import java.util.stream.*;
@@ -126,7 +127,7 @@ public class TS_FileImageUtils {
 
     public static BufferedImage toImage(byte[] imgbytes) {
         return TGS_UnSafe.call(() -> {
-            try ( var bis = new ByteArrayInputStream(imgbytes)) {
+            try (var bis = new ByteArrayInputStream(imgbytes)) {
                 return ImageIO.read(bis);
             }
         });
@@ -216,7 +217,7 @@ public class TS_FileImageUtils {
 
     public static byte[] toBytes(BufferedImage image, CharSequence fileType) {
         return TGS_UnSafe.call(() -> {
-            try ( var baos = new ByteArrayOutputStream()) {
+            try (var baos = new ByteArrayOutputStream()) {
                 ImageIO.write(image, fileType.toString(), baos);
                 baos.flush();
                 return baos.toByteArray();
@@ -225,7 +226,7 @@ public class TS_FileImageUtils {
     }
 
     public static String toBase64(BufferedImage image, CharSequence fileType) {
-        return Base64.getEncoder().encodeToString(toBytes(image, fileType));
+        return TGS_CryptUtils.encrypt64(toBytes(image, fileType));
     }
 
     public static BufferedImage ToImage(CharSequence base64) {

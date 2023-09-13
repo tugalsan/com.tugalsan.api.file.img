@@ -4,6 +4,7 @@ module com.tugalsan.api.file.img {
     requires com.tugalsan.api.runnable;
     requires com.tugalsan.api.unsafe;
     requires com.tugalsan.api.thread;
+    requires com.tugalsan.api.crypto;
     requires com.tugalsan.api.list;
     requires com.tugalsan.api.string;
     requires com.tugalsan.api.shape;
