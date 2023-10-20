@@ -118,6 +118,13 @@ public class TS_FileImageUtils {
         g2d.dispose();
     }
 
+    public static BufferedImage toImageFromBase64(CharSequence base64) {
+        return TGS_UnSafe.call(() -> {
+            var imgbytes = TGS_CryptUtils.decrypt64_toBytes(base64);
+            return toImage(imgbytes);
+        });
+    }
+
     public static BufferedImage toImage(Path source) {
         return TGS_UnSafe.call(() -> {
             var imgbytes = Files.readAllBytes(source);
