@@ -118,13 +118,6 @@ public class TS_FileImageUtils {
         g2d.dispose();
     }
 
-    public static BufferedImage toImageFromBase64(CharSequence base64) {
-        return TGS_UnSafe.call(() -> {
-            var imgbytes = TGS_CryptUtils.decrypt64_toBytes(base64);
-            return toImage(imgbytes);
-        });
-    }
-
     public static BufferedImage toImage(Path source) {
         return TGS_UnSafe.call(() -> {
             var imgbytes = Files.readAllBytes(source);
@@ -239,6 +232,13 @@ public class TS_FileImageUtils {
     public static BufferedImage ToImage(CharSequence base64) {
         return TGS_UnSafe.call(() -> toImage(Base64.getDecoder().decode(base64.toString())));
     }
+
+//    public static BufferedImage toImageFromBase64(CharSequence base64) {
+//        return TGS_UnSafe.call(() -> {
+//            var imgbytes = TGS_CryptUtils.decrypt64_toBytes(base64);
+//            return toImage(imgbytes);
+//        });
+//    }
 
     public static BufferedImage ToImage(TGS_Url url) {
         return TGS_UnSafe.call(() -> ImageIO.read(new URL(url.toString())));
