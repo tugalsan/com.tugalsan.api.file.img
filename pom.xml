@@ -33,7 +33,7 @@
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
-            <version>0.4.19</version>
+            <version>0.4.20</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -88,13 +88,13 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>21</release><enablePreview>true</enablePreview>
+                    <release>21</release>
+                     <!--  <enablePreview>true</enablePreview>
                     <compilerArgs>
-                       
-                        <arg>--add-modules</arg>
+                       <arg>- -add-modules</arg>
                         <arg>jdk.incubator.vector</arg>
-                        <!-- <arg>-XX:+EnableDynamicAgentLoading -->
-                    </compilerArgs>
+                        <arg>-XX:+EnableDynamicAgentLoading 
+                    </compilerArgs> -->
                 </configuration>
             </plugin>
         </plugins>

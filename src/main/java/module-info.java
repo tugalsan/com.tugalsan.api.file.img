@@ -1,4 +1,5 @@
 module com.tugalsan.api.file.img {
+    requires gwt.user;
     requires java.desktop;
     requires net.coobird.thumbnailator;
     requires com.tugalsan.api.runnable;
