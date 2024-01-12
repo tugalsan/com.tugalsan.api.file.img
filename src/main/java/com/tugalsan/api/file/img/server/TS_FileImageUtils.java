@@ -14,12 +14,26 @@ import net.coobird.thumbnailator.*;
 import com.tugalsan.api.shape.client.*;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.*;
+import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.unsafe.client.*;
 import com.tugalsan.api.url.client.*;
+import java.util.List;
+import javax.imageio.spi.IIORegistry;
+import javax.imageio.spi.ImageWriterSpi;
 
 public class TS_FileImageUtils {
 
     final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class);
+
+    //ImageIO.write(renderedImage, "png", os);
+    public static List<String[]> formatNames(String[] args) {
+        return TGS_StreamUtils.toLst(
+                TGS_StreamUtils.of(
+                        IIORegistry.getDefaultInstance()
+                                .getServiceProviders(ImageWriterSpi.class, false)
+                ).map(item -> item.getFormatNames())
+        );
+    }
 
     public static BufferedImage toImage(CharSequence sourceText, int width, int height, int x, int y, Color colorFore, Color colorBack, Font font) {
         var bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -239,7 +253,6 @@ public class TS_FileImageUtils {
 //            return toImage(imgbytes);
 //        });
 //    }
-
     public static BufferedImage ToImage(TGS_Url url) {
         return TGS_UnSafe.call(() -> ImageIO.read(new URL(url.toString())));
     }
