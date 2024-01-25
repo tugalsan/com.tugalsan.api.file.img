@@ -254,7 +254,7 @@ public class TS_FileImageUtils {
 //        });
 //    }
     public static BufferedImage ToImage(TGS_Url url) {
-        return TGS_UnSafe.call(() -> ImageIO.read(new URL(url.toString())));
+        return TGS_UnSafe.call(() -> ImageIO.read(URI.create(url.toString()).toURL()));
     }
 
     public static void toFile(BufferedImage image, Path imgFile, double quality_fr0_to1) {
