@@ -240,7 +240,7 @@ public class TS_FileImageUtils {
     }
 
     public static String toBase64(BufferedImage image, CharSequence fileType) {
-        return TGS_CryptUtils.encrypt64(toBytes(image, fileType));
+        return TGS_CryptUtils.encrypt64_orEmpty(toBytes(image, fileType));
     }
 
     public static BufferedImage ToImage(CharSequence base64) {
