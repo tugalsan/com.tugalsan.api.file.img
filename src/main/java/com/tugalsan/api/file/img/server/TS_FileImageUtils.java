@@ -15,7 +15,7 @@ import com.tugalsan.api.shape.client.*;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.*;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
-import com.tugalsan.api.unsafe.client.*;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.url.client.*;
 import java.util.List;
 import javax.imageio.spi.IIORegistry;
@@ -49,11 +49,13 @@ public class TS_FileImageUtils {
         return bi;
     }
 
-    public static BufferedImage readImageFromFile(Path sourceImage, boolean cast2RGB) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_UnionExcuse<BufferedImage> readImageFromFile(Path sourceImage, boolean cast2RGB) {
+        try {
             var bufferedImage = ImageIO.read(sourceImage.toFile());
-            return cast2RGB ? toImageRGB(bufferedImage) : bufferedImage;
-        });
+            return TGS_UnionExcuse.of(cast2RGB ? toImageRGB(bufferedImage) : bufferedImage);
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
     public static void resize(BufferedImage src, BufferedImage desWithSize, boolean clever) {
@@ -132,19 +134,21 @@ public class TS_FileImageUtils {
         g2d.dispose();
     }
 
-    public static BufferedImage toImage(Path source) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_UnionExcuse<BufferedImage> toImage(Path source) {
+        try {
             var imgbytes = Files.readAllBytes(source);
             return toImage(imgbytes);
-        });
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static BufferedImage toImage(byte[] imgbytes) {
-        return TGS_UnSafe.call(() -> {
-            try (var bis = new ByteArrayInputStream(imgbytes)) {
-                return ImageIO.read(bis);
-            }
-        });
+    public static TGS_UnionExcuse<BufferedImage> toImage(byte[] imgbytes) {
+        try (var bis = new ByteArrayInputStream(imgbytes)) {
+            return TGS_UnionExcuse.of(ImageIO.read(bis));
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
     public static BufferedImage toImageRGB(BufferedImage preImage) {
@@ -153,8 +157,8 @@ public class TS_FileImageUtils {
         return convertToRGB;
     }
 
-    public static BufferedImage resize_and_rotate(BufferedImage preImage, TGS_ShapeDimension<Integer> newDim0, Integer rotate0, boolean respect) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_UnionExcuse<BufferedImage> resize_and_rotate(BufferedImage preImage, TGS_ShapeDimension<Integer> newDim0, Integer rotate0, boolean respect) {
+        try {
             d.ci("resize_and_rotate.init: ", preImage.getClass().getSimpleName());
 
             var rotate = rotate0;
@@ -203,12 +207,14 @@ public class TS_FileImageUtils {
                 b = b.rotate(rotate);
             }
             d.ci("resize_and_rotate.fin");
-            return b.asBufferedImage();
-        });
+            return TGS_UnionExcuse.of(b.asBufferedImage());
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static BufferedImage autoSizeRespectfully(BufferedImage bi, TGS_ShapeDimension<Integer> max, float quality_fr0_to1) {
-        return TGS_UnSafe.call(() -> {
+    public static TGS_UnionExcuse<BufferedImage> autoSizeRespectfully(BufferedImage bi, TGS_ShapeDimension<Integer> max, float quality_fr0_to1) {
+        try {
             var b = Thumbnails.of(bi);
             d.ci("castFromIMGtoPDF_A4PORT", "init", bi.getWidth(), bi.getHeight());
             if ((max.width < max.height && bi.getWidth() > bi.getHeight()) || (max.width > max.height && bi.getWidth() < bi.getHeight())) {
@@ -225,22 +231,28 @@ public class TS_FileImageUtils {
             var scaleFactor = Math.min(scaleFactorW, scaleFactorH);
             d.ci("castFromIMGtoPDF_A4PORT", "scaleFactor", scaleFactor);
             b = b.scale(scaleFactor).outputQuality(quality_fr0_to1);
-            return b.asBufferedImage();
-        });
+            return TGS_UnionExcuse.of(b.asBufferedImage());
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static byte[] toBytes(BufferedImage image, CharSequence fileType) {
-        return TGS_UnSafe.call(() -> {
-            try (var baos = new ByteArrayOutputStream()) {
-                ImageIO.write(image, fileType.toString(), baos);
-                baos.flush();
-                return baos.toByteArray();
-            }
-        });
+    public static TGS_UnionExcuse<byte[]> toBytes(BufferedImage image, CharSequence fileType) {
+        try (var baos = new ByteArrayOutputStream()) {
+            ImageIO.write(image, fileType.toString(), baos);
+            baos.flush();
+            return TGS_UnionExcuse.of(baos.toByteArray());
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static String toBase64(BufferedImage image, CharSequence fileType) {
-        return TGS_CryptUtils.encrypt64_orEmpty(toBytes(image, fileType));
+    public static TGS_UnionExcuse<String> toBase64_orEmpty(BufferedImage image, CharSequence fileType) {
+        var u_bytes = toBytes(image, fileType);
+        if (u_bytes.isExcuse()) {
+            return u_bytes.toExcuse();
+        }
+        return TGS_CryptUtils.encrypt64(u_bytes.value());
     }
 
     public static BufferedImage ToImage(CharSequence base64) {
