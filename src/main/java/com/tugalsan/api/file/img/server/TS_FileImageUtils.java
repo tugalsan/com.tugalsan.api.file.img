@@ -16,6 +16,7 @@ import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.*;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
 import com.tugalsan.api.union.client.TGS_UnionExcuse;
+import com.tugalsan.api.union.client.TGS_UnionExcuseVoid;
 import com.tugalsan.api.url.client.*;
 import java.util.List;
 import javax.imageio.spi.IIORegistry;
@@ -255,8 +256,8 @@ public class TS_FileImageUtils {
         return TGS_CryptUtils.encrypt64(u_bytes.value());
     }
 
-    public static BufferedImage ToImage(CharSequence base64) {
-        return TGS_UnSafe.call(() -> toImage(Base64.getDecoder().decode(base64.toString())));
+    public static TGS_UnionExcuse<BufferedImage> ToImage(CharSequence base64) {
+        return toImage(Base64.getDecoder().decode(base64.toString()));
     }
 
 //    public static BufferedImage toImageFromBase64(CharSequence base64) {
@@ -265,21 +266,28 @@ public class TS_FileImageUtils {
 //            return toImage(imgbytes);
 //        });
 //    }
-    public static BufferedImage ToImage(TGS_Url url) {
-        return TGS_UnSafe.call(() -> ImageIO.read(URI.create(url.toString()).toURL()));
+    public static TGS_UnionExcuse<BufferedImage> ToImage(TGS_Url url) {
+        try {
+            return TGS_UnionExcuse.of(ImageIO.read(URI.create(url.toString()).toURL()));
+        } catch (IOException ex) {
+            return TGS_UnionExcuse.ofExcuse(ex);
+        }
     }
 
-    public static void toFile(BufferedImage image, Path imgFile, double quality_fr0_to1) {
+    public static TGS_UnionExcuseVoid toFile(BufferedImage image, Path imgFile, double quality_fr0_to1) {
 //        //DEPRECATED: NOT GOOD QUALITY
 //            image = TS_ImageUtils.toImageRGB(image);
 //            ImageIO.write(image, TS_FileUtils.getNameType(imgFile), imgFile.toFile());
-        TGS_UnSafe.run(() -> {
+        try {
             if (quality_fr0_to1 > 0.99) {
                 Thumbnails.of(image).scale(1).toFile(imgFile.toFile());
             } else {
                 Thumbnails.of(image).scale(1).outputQuality(quality_fr0_to1).toFile(imgFile.toFile());
             }
-        });
+            return TGS_UnionExcuseVoid.ofVoid();
+        } catch (IOException ex) {
+            return TGS_UnionExcuseVoid.ofExcuse(ex);
+        }
     }
 
     public static BufferedImage createRGB(int width, int height) {
