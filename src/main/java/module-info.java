@@ -2,8 +2,8 @@ module com.tugalsan.api.file.img {
     requires gwt.user;
     requires java.desktop;
     requires net.coobird.thumbnailator;
-    requires com.tugalsan.api.runnable;
     requires com.tugalsan.api.unsafe;
+    requires com.tugalsan.api.callable;
     requires com.tugalsan.api.thread;
     requires com.tugalsan.api.stream;
     requires com.tugalsan.api.crypto;
