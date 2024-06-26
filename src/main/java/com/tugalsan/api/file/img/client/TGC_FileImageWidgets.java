@@ -12,8 +12,8 @@ public class TGC_FileImageWidgets {
     public TGC_FileImageWidgets(CharSequence mediaBase) {
         wi = new Image[5];
         IntStream.range(0, wi.length).parallel().forEach(i -> {
-            wi[i] = new Image(TGS_StringUtils.concat(mediaBase, "wi_", String.valueOf(i), ".jpg"));
-            d.ci(TGS_StringUtils.concat("wi[", String.valueOf(i), "].getUrl()"), wi[i].getUrl());
+            wi[i] = new Image(TGS_StringUtils.cmn().concat(mediaBase, "wi_", String.valueOf(i), ".jpg"));
+            d.ci(TGS_StringUtils.cmn().concat("wi[", String.valueOf(i), "].getUrl()"), wi[i].getUrl());
         });
         wi_repaint_idx = 2;
         wi_repaint();
