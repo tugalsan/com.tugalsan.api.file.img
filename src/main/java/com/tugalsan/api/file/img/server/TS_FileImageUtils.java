@@ -15,6 +15,7 @@ import com.tugalsan.api.shape.client.*;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.*;
 import com.tugalsan.api.stream.client.TGS_StreamUtils;
+import com.tugalsan.api.union.client.TGS_UnionExcuse;
 import com.tugalsan.api.unsafe.client.*;
 import com.tugalsan.api.url.client.*;
 import java.util.List;
@@ -24,6 +25,84 @@ import javax.imageio.spi.ImageWriterSpi;
 public class TS_FileImageUtils {
 
     final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class);
+
+    public static TGS_UnionExcuse<BufferedImage> filter(BufferedImage imageSource, float[] filter, boolean zeroFillEnable) {
+        return TGS_UnSafe.call(() -> {
+            var dimension = (int) Math.sqrt(filter.length);
+            var kernel = new Kernel(dimension, dimension, filter);
+            var convolveOp = new ConvolveOp(kernel, zeroFillEnable ? ConvolveOp.EDGE_ZERO_FILL : ConvolveOp.EDGE_NO_OP, null);
+            var imageDest = convolveOp.filter(imageSource, null);
+            return TGS_UnionExcuse.of(imageDest);
+        }, e -> TGS_UnionExcuse.ofExcuse(e));
+    }
+
+    public static float[] FILTER_IDENTITY() {
+        return new float[]{
+            0, 0, 0,
+            0, 1, 0,
+            0, 0, 0
+        };
+    }
+
+    public static float[] FILTER_EDGE_DETECTION_0() {
+        return new float[]{
+            0, -1, 0,
+            -1, 4, -1,
+            0, -1, 0
+        };
+    }
+
+    public static float[] FILTER_EDGE_DETECTION_1() {
+        return new float[]{
+            -1, -1, -1,
+            -1, 8, -1,
+            -1, -1, -1
+        };
+    }
+
+    public static float[] FILTER_SHARPEN() {
+        return new float[]{
+            0, -1, 0,
+            -1, 5, -1,
+            0, -1, 0
+        };
+    }
+
+    public static float[] FILTER_BLUR_BLOX() {
+        return new float[]{
+            1f / 9, 1f / 9, 1f / 9,
+            1f / 9, 1f / 9, 1f / 9,
+            1f / 9, 1f / 9, 1f / 9
+        };
+    }
+
+    public static float[] FILTER_BLUR_GAUSSIAN_3_X_3() {
+        return new float[]{
+            1f / 16, 2f / 16, 1f / 16,
+            2f / 16, 4f / 16, 2f / 16,
+            1f / 16, 2f / 16, 1f / 16
+        };
+    }
+
+    public static float[] FILTER_BLUR_GAUSSIAN_5_X_5() {
+        return new float[]{
+            1f / 256, 4f / 256, 6f / 256, 4f / 256, 1f / 256,
+            4f / 256, 16f / 256, 24f / 256, 16f / 256, 4f / 256,
+            6f / 256, 24f / 256, 36f / 256, 24f / 256, 6f / 256,
+            4f / 256, 16f / 256, 24f / 256, 16f / 256, 4f / 256,
+            1f / 256, 4f / 256, 6f / 256, 4f / 256, 1f / 256
+        };
+    }
+
+    public static float[] FILTER_UNSHARP_MASKING() {
+        return new float[]{
+            1f / 256, 4f / -256, 6f / -256, 4f / -256, 1f / -256,
+            4f / 256, 16f / -256, 24f / -256, 16f / -256, 4f / -256,
+            6f / 256, 24f / -256, -476f / -256, 24f / -256, 6f / -256,
+            4f / 256, 16f / -256, 24f / -256, 16f / -256, 4f / -256,
+            1f / 256, 4f / -256, 6f / -256, 4f / -256, 1f / -256
+        };
+    }
 
     //ImageIO.write(renderedImage, "png", os);
     public static List<String[]> formatNames(String[] args) {
