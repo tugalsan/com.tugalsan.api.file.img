@@ -105,7 +105,7 @@ public class TS_FileImageUtils {
     }
 
     //ImageIO.write(renderedImage, "png", os);
-    public static List<String[]> formatNames(String[] args) {
+    public static List<String[]> formatNames() {
         return TGS_StreamUtils.toLst(
                 TGS_StreamUtils.of(
                         IIORegistry.getDefaultInstance()
