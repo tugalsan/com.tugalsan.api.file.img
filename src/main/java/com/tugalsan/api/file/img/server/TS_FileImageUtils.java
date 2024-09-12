@@ -289,20 +289,20 @@ public class TS_FileImageUtils {
     public static BufferedImage autoSizeRespectfully(BufferedImage bi, TGS_ShapeDimension<Integer> max, float quality_fr0_to1) {
         return TGS_UnSafe.call(() -> {
             var b = Thumbnails.of(bi);
-            d.ci("castFromIMGtoPDF_A4PORT", "init", bi.getWidth(), bi.getHeight());
+            d.ci("autoSizeRespectfully", "init", bi.getWidth(), bi.getHeight());
             if ((max.width < max.height && bi.getWidth() > bi.getHeight()) || (max.width > max.height && bi.getWidth() < bi.getHeight())) {
-                d.ci("castFromIMGtoPDF_A4PORT", "rotated");
+                d.ci("autoSizeRespectfully", "rotated");
                 b = b.rotate(90);
             }
             var dimBi = new TGS_ShapeDimension<Integer>(bi.getWidth(), bi.getHeight());
-            d.ci("castFromIMGtoPDF_A4PORT", "mid", dimBi.width, dimBi.height);
+            d.ci("autoSizeRespectfully", "mid", dimBi.width, dimBi.height);
 
             var scaleFactorW = 1f * max.width / dimBi.width;
-            d.ci("castFromIMGtoPDF_A4PORT", "scaleFactorW", scaleFactorW);
+            d.ci("autoSizeRespectfully", "scaleFactorW", scaleFactorW);
             var scaleFactorH = 1f * max.height / dimBi.height;
-            d.ci("castFromIMGtoPDF_A4PORT", "scaleFactorH", scaleFactorH);
+            d.ci("autoSizeRespectfully", "scaleFactorH", scaleFactorH);
             var scaleFactor = Math.min(scaleFactorW, scaleFactorH);
-            d.ci("castFromIMGtoPDF_A4PORT", "scaleFactor", scaleFactor);
+            d.ci("autoSizeRespectfully", "scaleFactor", scaleFactor);
             b = b.scale(scaleFactor).outputQuality(quality_fr0_to1);
             return b.asBufferedImage();
         });
