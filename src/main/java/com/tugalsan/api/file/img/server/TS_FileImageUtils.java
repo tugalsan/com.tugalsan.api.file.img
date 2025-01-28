@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.*;
 import javax.imageio.*;
-import net.coobird.thumbnailator.*;
 import com.tugalsan.api.shape.client.*;
 import com.tugalsan.api.log.server.*;
 import com.tugalsan.api.random.server.*;
@@ -21,6 +20,7 @@ import com.tugalsan.api.url.client.*;
 import java.util.List;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
+import net.coobird.thumbnailator.Thumbnails;
 
 public class TS_FileImageUtils {
 
