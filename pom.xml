@@ -26,9 +26,18 @@
                     <groupId>org.w3c.css</groupId>
                     <artifactId>sac</artifactId>
                 </exclusion>   
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>   
             </exclusions>
             <version>2.12.1</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.18.0</version>
         </dependency>
         <dependency>
             <groupId>net.coobird</groupId>
@@ -89,7 +98,7 @@
                 <version>3.13.0</version>
                 <configuration>
                     <release>23</release>
-                     <!--  <enablePreview>true</enablePreview>
+                    <!--  <enablePreview>true</enablePreview>
                     <compilerArgs>
                        <arg>- -add-modules</arg>
                         <arg>jdk.incubator.vector</arg>
