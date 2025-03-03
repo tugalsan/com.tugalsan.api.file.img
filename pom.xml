@@ -45,6 +45,11 @@
             <version>0.4.20</version>
         </dependency>
         <dependency>
+            <groupId>com.tianscar.imageio</groupId>
+            <artifactId>imageio-apng</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>com.tugalsan.api.gui</artifactId>
             <version>${project.version}</version>
