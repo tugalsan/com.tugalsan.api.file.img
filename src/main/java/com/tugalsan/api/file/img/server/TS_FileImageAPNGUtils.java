@@ -1,7 +1,7 @@
 package com.tugalsan.api.file.img.server;
 
 import com.tianscar.imageio.plugins.png.PNGImageWriteParam;
-import com.tugalsan.api.function.client.maythrow.checkedexceptions.TGS_FuncMTCEUtils;
+import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ import javax.imageio.metadata.IIOMetadataNode;
 public class TS_FileImageAPNGUtils {
 
     public void merge(Path apng, BufferedImage... frames) {
-        TGS_FuncMTCEUtils.run(() -> {
+        TGS_FuncMTCUtils.run(() -> {
             try (var os = ImageIO.createImageOutputStream(apng.toFile())) {
                 var nativeMetadataFormatName = "javax_imageio_png_1.0"; // see PNGMetadata.java
                 var writer = ImageIO.getImageWritersByFormatName("apng").next(); // get library's apng writer
@@ -84,7 +84,7 @@ public class TS_FileImageAPNGUtils {
     }
 
     public List<BufferedImage> extract(Path apng) {
-        return TGS_FuncMTCEUtils.call(() -> {
+        return TGS_FuncMTCUtils.call(() -> {
             var nativeMetadataFormatName = "javax_imageio_png_1.0"; // see PNGMetadata.java
             var is = ImageIO.createImageInputStream(Files.newInputStream(apng));
 
