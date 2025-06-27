@@ -1,6 +1,7 @@
 package com.tugalsan.api.file.img.server;
 
 import com.tugalsan.api.crypto.client.TGS_CryptUtils;
+import com.tugalsan.api.file.server.TS_FileUtils;
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
 import java.net.*;
 import java.util.*;
@@ -335,6 +336,18 @@ public class TS_FileImageUtils {
 //    }
     public static BufferedImage ToImage(TGS_Url url) {
         return TGS_FuncMTCUtils.call(() -> ImageIO.read(URI.create(url.toString()).toURL()));
+    }
+
+    public static void toFileTemp(BufferedImage image, double quality_fr0_to1) {
+        TGS_FuncMTCUtils.call(() -> {
+            var imgFile = TS_FileUtils.createFileTemp(d.className).value();
+            if (quality_fr0_to1 > 0.99) {
+                Thumbnails.of(image).scale(1).toFile(imgFile.toFile());
+            } else {
+                Thumbnails.of(image).scale(1).outputQuality(quality_fr0_to1).toFile(imgFile.toFile());
+            }
+            return imgFile;
+        });
     }
 
     public static void toFile(BufferedImage image, Path imgFile, double quality_fr0_to1) {

@@ -9,6 +9,7 @@ module com.tugalsan.api.file.img {
     requires com.tugalsan.api.stream;
     requires com.tugalsan.api.crypto;
     requires com.tugalsan.api.list;
+    requires com.tugalsan.api.file;
     requires com.tugalsan.api.union;
     requires com.tugalsan.api.string;
     requires com.tugalsan.api.shape;
