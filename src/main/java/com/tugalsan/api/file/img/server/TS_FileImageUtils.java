@@ -338,8 +338,8 @@ public class TS_FileImageUtils {
         return TGS_FuncMTCUtils.call(() -> ImageIO.read(URI.create(url.toString()).toURL()));
     }
 
-    public static void toFileTemp(BufferedImage image, double quality_fr0_to1) {
-        TGS_FuncMTCUtils.call(() -> {
+    public static Path toFileTemp(BufferedImage image, double quality_fr0_to1) {
+        return TGS_FuncMTCUtils.call(() -> {
             var imgFile = TS_FileUtils.createFileTemp(d.className).value();
             if (quality_fr0_to1 > 0.99) {
                 Thumbnails.of(image).scale(1).toFile(imgFile.toFile());
