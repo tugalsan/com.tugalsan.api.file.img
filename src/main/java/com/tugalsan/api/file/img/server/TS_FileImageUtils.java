@@ -28,7 +28,7 @@ public class TS_FileImageUtils {
 
     final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class);
 
-    public BufferedImage toMagnifiedAtCenter(BufferedImage originalImage, float magnifyPercent) {
+    public static BufferedImage toMagnifiedAtCenter(BufferedImage originalImage, float magnifyPercent) {
         var magnifyPercentLoss = 1 - magnifyPercent;
         var x = (int) (originalImage.getWidth() * magnifyPercentLoss);
         var y = (int) (originalImage.getHeight() * magnifyPercentLoss);
@@ -37,7 +37,7 @@ public class TS_FileImageUtils {
         return originalImage.getSubimage(x, y, w, h);
     }
 
-    public BufferedImage toGreyScale(BufferedImage originalImage) {
+    public static BufferedImage toGreyScale(BufferedImage originalImage) {
         var destImg = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
         int alpha, red, green, blue, pixel, avg, grey;
         for (var x = 0; x < originalImage.getWidth(); x++) {
