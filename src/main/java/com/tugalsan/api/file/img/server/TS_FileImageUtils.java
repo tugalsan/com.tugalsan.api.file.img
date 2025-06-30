@@ -28,6 +28,33 @@ public class TS_FileImageUtils {
 
     final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class);
 
+    public BufferedImage toMagnifiedAtCenter(BufferedImage originalImage, float magnifyPercent) {
+        var magnifyPercentLoss = 1 - magnifyPercent;
+        var x = (int) (originalImage.getWidth() * magnifyPercentLoss);
+        var y = (int) (originalImage.getHeight() * magnifyPercentLoss);
+        var w = originalImage.getWidth() - (int) (originalImage.getWidth() * magnifyPercentLoss * 2);
+        var h = originalImage.getHeight() - (int) (originalImage.getHeight() * magnifyPercentLoss * 2);
+        return originalImage.getSubimage(x, y, w, h);
+    }
+
+    public BufferedImage toGreyScale(BufferedImage originalImage) {
+        var destImg = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        int alpha, red, green, blue, pixel, avg, grey;
+        for (var x = 0; x < originalImage.getWidth(); x++) {
+            for (var y = 0; y < originalImage.getHeight(); y++) {
+                pixel = originalImage.getRGB(x, y);
+                alpha = (pixel >> 24) & 0xFF;
+                red = (pixel >> 16) & 0xFF;
+                green = (pixel >> 8) & 0xFF;
+                blue = pixel & 0xFF;
+                avg = (red + blue + green) / 3;
+                grey = (alpha << 24) + (avg << 16) + (avg << 8) + avg;
+                destImg.setRGB(x, y, grey);
+            }
+        }
+        return destImg;
+    }
+
     public static TGS_UnionExcuse<BufferedImage> filter(BufferedImage imageSource, float[] filter, boolean zeroFillEnable) {
         return TGS_FuncMTCUtils.call(() -> {
             var dimension = (int) Math.sqrt(filter.length);
