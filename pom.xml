@@ -9,35 +9,8 @@
         <dependency>
             <groupId>org.gwtproject</groupId>
             <artifactId>gwt-user</artifactId><!--gwt-user ver2022.07.05 -->
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.jsinterop</groupId>
-                    <artifactId>jsinterop-annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>                
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>javax.servlet-api</artifactId>
-                </exclusion>                
-                <exclusion>
-                    <groupId>org.w3c.css</groupId>
-                    <artifactId>sac</artifactId>
-                </exclusion>   
-                <exclusion>
-                    <groupId>commons-io</groupId>
-                    <artifactId>commons-io</artifactId>
-                </exclusion>   
-            </exclusions>
             <version>2.12.2</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.19.0</version> <!-- poi version 5 needs it, becuase servlet-upload and gwt messes up -->
         </dependency>
         <dependency>
             <groupId>net.coobird</groupId>
@@ -100,7 +73,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
                 <configuration>
                     <release>24</release><!--prop.jdk-->
                     <!--  <enablePreview>true</enablePreview>
