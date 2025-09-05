@@ -26,7 +26,14 @@ import net.coobird.thumbnailator.Thumbnails;
 
 public class TS_FileImageUtils {
 
-    final private static TS_Log d = TS_Log.of(TS_FileImageUtils.class);
+    private TS_FileImageUtils() {
+
+    }
+
+    private static TS_Log d() {
+        return d.orElse(TS_Log.of(TS_FileImageUtils.class));
+    }
+    final private static StableValue<TS_Log> d = StableValue.of();
 
     public static BufferedImage toMagnifiedAtCenter(BufferedImage originalImage, float magnifyPercent) {
         var magnifyPercentLoss = 1 - magnifyPercent;
@@ -263,7 +270,7 @@ public class TS_FileImageUtils {
 
     public static BufferedImage resize_and_rotate(BufferedImage preImage, TGS_ShapeDimension<Integer> newDim0, Integer rotate0, boolean respect) {
         return TGS_FuncMTCUtils.call(() -> {
-            d.ci("resize_and_rotate.init: ", preImage.getClass().getSimpleName());
+            d().ci("resize_and_rotate.init: ", preImage.getClass().getSimpleName());
 
             var rotate = rotate0;
             var newDim = newDim0;
@@ -276,7 +283,7 @@ public class TS_FileImageUtils {
                 }
                 rotate = rotate % 360;
             }
-            d.ci("resize_and_rotate.fixRotate: ", rotate);
+            d().ci("resize_and_rotate.fixRotate: ", rotate);
 
             TGS_ShapeDimension<Integer> org = new TGS_ShapeDimension(preImage.getWidth(), preImage.getHeight());
             if (newDim == null) {
@@ -303,14 +310,14 @@ public class TS_FileImageUtils {
                     newDim.width = widthByHeight;
                 }
             }
-            d.ci("resize_and_rotate.fixDim: ", org.width, org.height, newDim.width, newDim.height, "@r:", rotate);
+            d().ci("resize_and_rotate.fixDim: ", org.width, org.height, newDim.width, newDim.height, "@r:", rotate);
 
             var b = Thumbnails.of(preImage);
             b = b.size(newDim.width, newDim.height);
             if (rotate != 0) {
                 b = b.rotate(rotate);
             }
-            d.ci("resize_and_rotate.fin");
+            d().ci("resize_and_rotate.fin");
             return b.asBufferedImage();
         });
     }
@@ -318,20 +325,20 @@ public class TS_FileImageUtils {
     public static BufferedImage autoSizeRespectfully(BufferedImage bi, TGS_ShapeDimension<Integer> max, float quality_fr0_to1) {
         return TGS_FuncMTCUtils.call(() -> {
             var b = Thumbnails.of(bi);
-            d.ci("autoSizeRespectfully", "init", bi.getWidth(), bi.getHeight());
+            d().ci("autoSizeRespectfully", "init", bi.getWidth(), bi.getHeight());
             if ((max.width < max.height && bi.getWidth() > bi.getHeight()) || (max.width > max.height && bi.getWidth() < bi.getHeight())) {
-                d.ci("autoSizeRespectfully", "rotated");
+                d().ci("autoSizeRespectfully", "rotated");
                 b = b.rotate(90);
             }
             var dimBi = new TGS_ShapeDimension<Integer>(bi.getWidth(), bi.getHeight());
-            d.ci("autoSizeRespectfully", "mid", dimBi.width, dimBi.height);
+            d().ci("autoSizeRespectfully", "mid", dimBi.width, dimBi.height);
 
             var scaleFactorW = 1f * max.width / dimBi.width;
-            d.ci("autoSizeRespectfully", "scaleFactorW", scaleFactorW);
+            d().ci("autoSizeRespectfully", "scaleFactorW", scaleFactorW);
             var scaleFactorH = 1f * max.height / dimBi.height;
-            d.ci("autoSizeRespectfully", "scaleFactorH", scaleFactorH);
+            d().ci("autoSizeRespectfully", "scaleFactorH", scaleFactorH);
             var scaleFactor = Math.min(scaleFactorW, scaleFactorH);
-            d.ci("autoSizeRespectfully", "scaleFactor", scaleFactor);
+            d().ci("autoSizeRespectfully", "scaleFactor", scaleFactor);
             b = b.scale(scaleFactor).outputQuality(quality_fr0_to1);
             return b.asBufferedImage();
         });
@@ -351,7 +358,7 @@ public class TS_FileImageUtils {
         return TGS_CryptUtils.encrypt64(toBytes(image, fileType));
     }
 
-    public static BufferedImage ToImage(CharSequence base64) {
+    public static BufferedImage toImage(CharSequence base64) {
         return TGS_FuncMTCUtils.call(() -> toImage(Base64.getDecoder().decode(base64.toString())));
     }
 
@@ -361,7 +368,7 @@ public class TS_FileImageUtils {
 //            return toImage(imgbytes);
 //        });
 //    }
-    public static BufferedImage ToImage(TGS_Url url) {
+    public static BufferedImage toImage(TGS_Url url) {
         return TGS_FuncMTCUtils.call(() -> ImageIO.read(URI.create(url.toString()).toURL()));
     }
 

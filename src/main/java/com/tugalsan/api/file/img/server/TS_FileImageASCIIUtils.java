@@ -5,6 +5,10 @@ import java.awt.*;
 import java.awt.image.*;
 
 public class TS_FileImageASCIIUtils {
+    
+    private TS_FileImageASCIIUtils(){
+        
+    }
 
     public static String convert(BufferedImage image, boolean negative) {
         var sb = new StringBuilder((image.getWidth() + 1) * image.getHeight());

@@ -2,6 +2,7 @@ package com.tugalsan.api.file.img.server;
 
 import com.tianscar.imageio.plugins.png.PNGImageWriteParam;
 import com.tugalsan.api.function.client.maythrowexceptions.checked.TGS_FuncMTCUtils;
+import com.tugalsan.api.log.server.TS_Log;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.nio.file.Files;
@@ -18,7 +19,16 @@ import javax.imageio.metadata.IIOMetadataNode;
 //REF: https://github.com/Tianscar/imageio-apng/tree/main/src/test/java/com/tianscar/imageio/plugins/png/test
 public class TS_FileImageAPNGUtils {
 
-    public void merge(Path apng, BufferedImage... frames) {
+    private TS_FileImageAPNGUtils() {
+
+    }
+
+    private static TS_Log d() {
+        return d.orElse(TS_Log.of(TS_FileImageAPNGUtils.class));
+    }
+    final private static StableValue<TS_Log> d = StableValue.of();
+
+    public static void merge(Path apng, BufferedImage... frames) {
         TGS_FuncMTCUtils.run(() -> {
             try (var os = ImageIO.createImageOutputStream(apng.toFile())) {
                 var nativeMetadataFormatName = "javax_imageio_png_1.0"; // see PNGMetadata.java
@@ -83,7 +93,7 @@ public class TS_FileImageAPNGUtils {
         });
     }
 
-    public List<BufferedImage> extract(Path apng) {
+    public static List<BufferedImage> extract(Path apng) {
         return TGS_FuncMTCUtils.call(() -> {
             var nativeMetadataFormatName = "javax_imageio_png_1.0"; // see PNGMetadata.java
             var is = ImageIO.createImageInputStream(Files.newInputStream(apng));
@@ -104,14 +114,14 @@ public class TS_FileImageAPNGUtils {
                     var child = (IIOMetadataNode) metadata.getAsTree(nativeMetadataFormatName).getFirstChild();
                     while (child != null) {
                         if ("fcTL".equals(child.getNodeName())) {
-                            System.out.println("frame index: " + i);
-                            System.out.println("width: " + child.getAttribute("width"));
-                            System.out.println("height: " + child.getAttribute("height"));
-                            System.out.println("x offset: " + child.getAttribute("x_offset"));
-                            System.out.println("y offset: " + child.getAttribute("y_offset"));
-                            System.out.println("disposal operator: " + child.getAttribute("dispose_op"));
-                            System.out.println("blend operator: " + child.getAttribute("blend_op"));
-                            System.out.println("delay time (seconds): "
+                            d().cr("frame index: " + i);
+                            d().cr("width: " + child.getAttribute("width"));
+                            d().cr("height: " + child.getAttribute("height"));
+                            d().cr("x offset: " + child.getAttribute("x_offset"));
+                            d().cr("y offset: " + child.getAttribute("y_offset"));
+                            d().cr("disposal operator: " + child.getAttribute("dispose_op"));
+                            d().cr("blend operator: " + child.getAttribute("blend_op"));
+                            d().cr("delay time (seconds): "
                                     + (Integer.parseInt(child.getAttribute("delay_num"))
                                     / Integer.parseInt(child.getAttribute("delay_den"))));
                             break;
